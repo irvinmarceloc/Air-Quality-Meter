@@ -108,7 +108,7 @@ void loop()
         oled.print("TVOC:     ");
         oled.setTextSize(1);
         oled.print(ccs.getTVOC());
-        oled.print(" ppb");
+        oled.print("  ppb");
         oled.display();
     }else{
       Serial.println("ERROR!");
