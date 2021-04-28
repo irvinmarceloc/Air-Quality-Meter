@@ -29,12 +29,24 @@ const int verdePin = 8;
 
 void setup()
 {
+  /*Inicia pantalla oled*/
   Wire.begin();
   oled.begin(SSD1306_SWITCHCAPVCC, 0X3C);
-  pinMode(altavozPin, OUTPUT);  //definir pin como salida
-  pinMode(verdePin, OUTPUT);  //definir pin como salida
-  pinMode(rojoPin, OUTPUT);  //definir pin como salida
+  /*Inicia indicadores*/
+  pinMode(altavozPin, OUTPUT);  //definir pin como salida ALTAVOZ
+  pinMode(verdePin, OUTPUT);  //definir pin como salida LUZ VERDE 
+  pinMode(rojoPin, OUTPUT);  //definir pin como salida LUZ ROJA
+  /*Inicia sensor DHT*/
   dht.begin();
+  /*Inicia sensor CSS811*/
+  Serial.println("CCS811 test");
+  if(!ccs.begin()){
+    Serial.println("Failed to start sensor! Please check your wiring.");
+    while(1);
+  }
+  // Wait for the sensor to be ready
+  while(!ccs.available());
+  //
   Serial.begin(9600);
 }
 
@@ -71,14 +83,27 @@ void loop()
   oled.print(" % ");
   oled.display();
 
-
+  if(ccs.available()){
+    if(!ccs.readData()){
+     Serial.println(ccs.calculateTemperature(););
+     Serial.print("ºC, CO2: ");
+      Serial.print(ccs.geteCO2());
+      Serial.print("ppm, TVOC: ");
+      Serial.println(ccs.getTVOC());
+   }   
+    else{
+      Serial.println("ERROR!");
+      while(1);
+    }
+  }
+  
   
   Serial.println("Temperatura: ");
   Serial.println(TEMPERATURA);
   Serial.println(" Humedad:  ");
   Serial.println(HUMEDAD);
   Serial.println();
-  delay(2500);
+  delay(3000);
 }
 
 void alarma()
