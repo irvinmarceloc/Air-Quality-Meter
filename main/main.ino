@@ -1,18 +1,19 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#include "Adafruit_CCS811.h"
-Adafruit_CCS811 ccs;
-
-
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+
+
+#include "Adafruit_CCS811.h"
+Adafruit_CCS811 ccs;
 
 #define ANCHO 128
 #define ALTO 64
 #define OLED_RESET 4
 
 Adafruit_SSD1306 oled(ANCHO, ALTO, &Wire, OLED_RESET);
+
 
 
 
@@ -27,7 +28,7 @@ DHT dht(SENSOR, DHT22);
 
 const int sensorPin = A0;    // seleccionar la entrada para el sensor
 
-const int altavozPin = 13;
+
 const int rojoPin = 7;
 const int verdePin = 8;
 
@@ -52,7 +53,6 @@ void setup()
   while (!ccs.available());
   
   /*Inicia indicadores*/
-  pinMode(altavozPin, OUTPUT);  //definir pin como salida ALTAVOZ
   pinMode(verdePin, OUTPUT);  //definir pin como salida LUZ VERDE 
   pinMode(rojoPin, OUTPUT);  //definir pin como salida LUZ ROJA
   
@@ -70,13 +70,11 @@ void loop()
   if (TEMPERATURA>23){
     digitalWrite(rojoPin, HIGH);   
     digitalWrite(verdePin, LOW);   
-    digitalWrite(altavozPin, HIGH);
   } else {
     digitalWrite(verdePin, HIGH);     
     digitalWrite(rojoPin, LOW);   
-    digitalWrite(altavozPin,LOW);
   } 
-  
+ 
   if(ccs.available()){
     if(!ccs.readData()){
         oled.clearDisplay();
@@ -115,7 +113,6 @@ void loop()
     }
   }
   
- 
   Serial.print("Temperatura: ");
   Serial.print(TEMPERATURA);
   Serial.println(" C");
@@ -130,14 +127,4 @@ void loop()
   Serial.println("ppb");
   Serial.println("\n");
   delay(1500);
-}
-
-void alarma(int on_off)
-{
-  if (on_off == 1){
-    digitalWrite(altavozPin, HIGH);   
-  }else {
-    digitalWrite(altavozPin, LOW);   
-  }
-  
 }
