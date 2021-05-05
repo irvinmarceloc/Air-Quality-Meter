@@ -61,7 +61,7 @@ void setup()
   dht.begin();
   
 }
-int i=0;
+
 void loop() 
 {
     
@@ -103,6 +103,12 @@ void loop()
         oled.print(ccs.getTVOC());
         oled.print("  ppb");
         oled.display();
+        delay(1500);
+        oled.clearDisplay();
+        oled.setCursor(0,0);
+        oled.setTextSize(1);
+        oled.print("Air Quality Meter ");
+        oled.setCursor(5,30);
     }else{
       Serial.println("ERROR!");
     }
@@ -112,44 +118,45 @@ void loop()
     digitalWrite(rojoPin, LOW);   
     digitalWrite(verdePin, LOW);   
     digitalWrite(altavoz, LOW);   
+    oled.print("Ambiente muy bueno");
+    oled.display();
+    delay(500);
   }
   //Ambiente bueno 
   if ((ccs.geteCO2()>=500 || ccs.getTVOC()>=200) && (ccs.geteCO2()< 1000 && ccs.getTVOC()<600) ){
-    if (i = 0){
-      digitalWrite(verdePin, HIGH);   
-      i = 1;
-    }
-    if (i = 0){
-      digitalWrite(verdePin, LOW);   
-      i = 0;
-    }
+    digitalWrite(verdePin, HIGH);   
     digitalWrite(rojoPin, LOW);   
     digitalWrite(altavoz, LOW);   
+    oled.print("Ambiente bueno");
+    oled.display();
+    delay(500);
   }
   //Ambiente moderadamente malo
   if ((ccs.geteCO2()>=1000 || ccs.getTVOC()>=600) && (ccs.geteCO2()< 1500 && ccs.getTVOC()<1000) ){
-    if (i = 0){
-      digitalWrite(verdePin, HIGH);   
-      i = 1;
-    }
-    if (i = 0){
-      digitalWrite(verdePin, LOW);   
-      i = 0;
-    }
-    digitalWrite(rojoPin, LOW);   
+    digitalWrite(verdePin, HIGH);   
+    digitalWrite(rojoPin, HIGH);   
     digitalWrite(altavoz, LOW);   
+    oled.print("Ambiente malo");
+    oled.display();
+    delay(500);
   }  
   //Ambiente muy malo
-  if ((ccs.geteCO2()>=1500 || ccs.getTVOC()>=1000) && (ccs.geteCO2()<3600 && ccs.getTVOC()<2000) ){
+  if ((ccs.geteCO2()>=1500 || ccs.getTVOC()>=1000) && (ccs.geteCO2()<2000 && ccs.getTVOC()<2000) ){
     digitalWrite(rojoPin, HIGH);   
     digitalWrite(verdePin, LOW);   
     digitalWrite(altavoz, LOW);   
+    oled.print("Ambiente muy malo");
+    oled.display();
+    delay(500);
   }
   //Ambiente inaceptable
   if (ccs.geteCO2()>=2000 || ccs.getTVOC()>=2000){
     digitalWrite(rojoPin, HIGH);   
     digitalWrite(verdePin, LOW);   
-    digitalWrite(altavoz, HIGH);   
+    digitalWrite(altavoz, HIGH); 
+    oled.print("ALERTA");
+    oled.display();
+    delay(500);      
   }
   
   //Serial.print("Temperatura: ");
