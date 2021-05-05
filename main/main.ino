@@ -31,6 +31,7 @@ const int sensorPin = A0;    // seleccionar la entrada para el sensor
 
 const int rojoPin = 7;
 const int verdePin = 8;
+const int altavoz = 9;
 
 
 void setup()
@@ -55,25 +56,19 @@ void setup()
   /*Inicia indicadores*/
   pinMode(verdePin, OUTPUT);  //definir pin como salida LUZ VERDE 
   pinMode(rojoPin, OUTPUT);  //definir pin como salida LUZ ROJA
-  
+  pinMode(altavoz, OUTPUT);  //definir pin como salida LUZ ROJA
   /*Inicia sensor DHT*/
   dht.begin();
   
 }
-
+int i=0;
 void loop() 
 {
     
   TEMPERATURA = dht.readTemperature();
   HUMEDAD = dht.readHumidity();
   
-  if (TEMPERATURA>23){
-    digitalWrite(rojoPin, HIGH);   
-    digitalWrite(verdePin, LOW);   
-  } else {
-    digitalWrite(verdePin, HIGH);     
-    digitalWrite(rojoPin, LOW);   
-  } 
+
  
   if(ccs.available()){
     if(!ccs.readData()){
@@ -112,19 +107,63 @@ void loop()
       Serial.println("ERROR!");
     }
   }
+  //Ambiente muy bueno
+  if (ccs.geteCO2()<500 && ccs.getTVOC()<200){
+    digitalWrite(rojoPin, LOW);   
+    digitalWrite(verdePin, LOW);   
+    digitalWrite(altavoz, LOW);   
+  }
+  //Ambiente bueno 
+  if ((ccs.geteCO2()>=500 || ccs.getTVOC()>=200) && (ccs.geteCO2()< 1000 && ccs.getTVOC()<600) ){
+    if (i = 0){
+      digitalWrite(verdePin, HIGH);   
+      i = 1;
+    }
+    if (i = 0){
+      digitalWrite(verdePin, LOW);   
+      i = 0;
+    }
+    digitalWrite(rojoPin, LOW);   
+    digitalWrite(altavoz, LOW);   
+  }
+  //Ambiente moderadamente malo
+  if ((ccs.geteCO2()>=1000 || ccs.getTVOC()>=600) && (ccs.geteCO2()< 1500 && ccs.getTVOC()<1000) ){
+    if (i = 0){
+      digitalWrite(verdePin, HIGH);   
+      i = 1;
+    }
+    if (i = 0){
+      digitalWrite(verdePin, LOW);   
+      i = 0;
+    }
+    digitalWrite(rojoPin, LOW);   
+    digitalWrite(altavoz, LOW);   
+  }  
+  //Ambiente muy malo
+  if ((ccs.geteCO2()>=1500 || ccs.getTVOC()>=1000) && (ccs.geteCO2()<3600 && ccs.getTVOC()<2000) ){
+    digitalWrite(rojoPin, HIGH);   
+    digitalWrite(verdePin, LOW);   
+    digitalWrite(altavoz, LOW);   
+  }
+  //Ambiente inaceptable
+  if (ccs.geteCO2()>=2000 || ccs.getTVOC()>=2000){
+    digitalWrite(rojoPin, HIGH);   
+    digitalWrite(verdePin, LOW);   
+    digitalWrite(altavoz, HIGH);   
+  }
   
-  Serial.print("Temperatura: ");
+  //Serial.print("Temperatura: ");
   Serial.print(TEMPERATURA);
-  Serial.println(" C");
-  Serial.print("Humedad:  ");
+  Serial.print(",");
+  //Serial.print("Humedad:  ");
   Serial.print(HUMEDAD);
-  Serial.println("%");
-  Serial.print("CO2: ");
+  Serial.print(",");
+  //Serial.print("CO2: ");
   Serial.print(ccs.geteCO2());
-  Serial.println("ppm");
-  Serial.print("TVOC: ");
+  Serial.print(",");
+  //Serial.print("TVOC: ");
   Serial.print(ccs.getTVOC());
-  Serial.println("ppb");
-  Serial.println("\n");
+  Serial.println();
+  //Serial.println("\n");
   delay(1500);
 }
