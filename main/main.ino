@@ -57,9 +57,24 @@ void setup()
   pinMode(verdePin, OUTPUT);  //definir pin como salida LUZ VERDE 
   pinMode(rojoPin, OUTPUT);  //definir pin como salida LUZ ROJA
   pinMode(altavoz, OUTPUT);  //definir pin como salida LUZ ROJA
+
+  /*Alimentación*/
+  pinMode(3, OUTPUT);  
+  pinMode(4, OUTPUT);  
+  pinMode(5, OUTPUT);  
+  pinMode(6, OUTPUT);  
+  pinMode(10, OUTPUT);  
+  pinMode(11, OUTPUT);  
+  pinMode(12, OUTPUT);  
   /*Inicia sensor DHT*/
   dht.begin();
-  
+  digitalWrite(3, HIGH);   
+  digitalWrite(4, LOW);   
+  digitalWrite(5, HIGH);   
+  digitalWrite(6, LOW);   
+  digitalWrite(10, HIGH);   
+  digitalWrite(11, LOW);   
+  digitalWrite(12, HIGH);   
 }
 
 void loop() 
@@ -159,18 +174,18 @@ void loop()
     delay(500);      
   }
   
-  //Serial.print("Temperatura: ");
+  Serial.print("Temperatura: ");
   Serial.print(TEMPERATURA);
   Serial.print(",");
-  //Serial.print("Humedad:  ");
+  Serial.print("Humedad:  ");
   Serial.print(HUMEDAD);
   Serial.print(",");
-  //Serial.print("CO2: ");
+  Serial.print("CO2: ");
   Serial.print(ccs.geteCO2());
   Serial.print(",");
-  //Serial.print("TVOC: ");
+  Serial.print("TVOC: ");
   Serial.print(ccs.getTVOC());
   Serial.println();
-  //Serial.println("\n");
+  Serial.println("\n");
   delay(1500);
 }
